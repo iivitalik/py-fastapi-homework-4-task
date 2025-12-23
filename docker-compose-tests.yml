@@ -4,12 +4,13 @@ services:
       context: .
       dockerfile: ./docker/tests/Dockerfile
     container_name: backend_theater_test
-    command: [ "pytest", "-c", "/usr/src/config/pytest.ini",
-               "-m", "e2e", "--maxfail=5", "--disable-warnings", "-v", "--tb=short"]
+    command: >
+      sh -c "alembic upgrade head && 
+             pytest -c /usr/src/config/pytest.ini -m e2e --maxfail=5 --disable-warnings -v --tb=short"
     environment:
       - PYTHONPATH=/usr/src/fastapi
       - ENVIRONMENT=testing
-      - EMAIL_HOST=mailhog_theater_test
+      - EMAIL_HOST=mailhog
       - EMAIL_PORT=1025
       - EMAIL_HOST_USER=testuser@mate.com
       - EMAIL_HOST_PASSWORD=test_password
@@ -17,9 +18,10 @@ services:
       - MAILHOG_API_PORT=8025
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=some_password
-      - MINIO_HOST=minio-theater-test
+      - MINIO_HOST=minio
       - MINIO_PORT=9000
       - MINIO_STORAGE=theater-storage
+      - DATABASE_URL=postgresql+asyncpg://admin:some_password@postgres_theater:5432/movies_db
     depends_on:
       mailhog:
         condition: service_started
@@ -49,9 +51,6 @@ services:
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=some_password
-      - MINIO_HOST=minio-theater-test
-      - MINIO_PORT=9000
-      - MINIO_STORAGE=theater-storage
     volumes:
       - minio_data_test:/data
     healthcheck:
@@ -74,7 +73,7 @@ services:
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=some_password
-      - MINIO_HOST=minio-theater-test
+      - MINIO_HOST=minio
       - MINIO_PORT=9000
       - MINIO_STORAGE=theater-storage
     networks:
