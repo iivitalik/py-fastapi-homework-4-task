@@ -281,7 +281,8 @@ async def request_password_reset_token(
         },
         500: {
             "description": "Internal Server Error - An error occurred while resetting the password.",
-            "content": {"application/json": {"example": {"detail": "An error occurred while resetting the password."}}},
+            "content": {"application/json": {"example": {"detail": "An error "
+                                                                   "occurred while resetting the password."}}},
         },
     },
 )
@@ -353,7 +354,8 @@ async def reset_password(
         },
         500: {
             "description": "Internal Server Error - An error occurred while processing the request.",
-            "content": {"application/json": {"example": {"detail": "An error occurred while processing the request."}}},
+            "content": {"application/json": {"example": {"detail": "An error occurred "
+                                                                   "while processing the request."}}},
         },
     },
 )
