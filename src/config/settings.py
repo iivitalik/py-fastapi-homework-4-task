@@ -18,15 +18,15 @@ class BaseAppSettings(BaseSettings):
 
     LOGIN_TIME_DAYS: int = 7
 
-    EMAIL_HOST: str = os.getenv("EMAIL_HOST", "mailhog")
-    EMAIL_PORT: int = int(os.getenv("EMAIL_PORT", 1025))
-    EMAIL_HOST_USER: str = os.getenv("EMAIL_HOST_USER", "testuser@mate.com")
+    EMAIL_HOST: str = os.getenv("EMAIL_HOST", "host")
+    EMAIL_PORT: int = int(os.getenv("EMAIL_PORT", 25))
+    EMAIL_HOST_USER: str = os.getenv("EMAIL_HOST_USER", "testuser")
     EMAIL_HOST_PASSWORD: str = os.getenv("EMAIL_HOST_PASSWORD", "test_password")
     EMAIL_USE_TLS: bool = os.getenv("EMAIL_USE_TLS", "False").lower() == "true"
-    MAILHOG_API_PORT: int = int(os.getenv("MAILHOG_API_PORT", 8025))
+    MAILHOG_API_PORT: int = os.getenv("MAILHOG_API_PORT", 8025)
 
-    S3_STORAGE_HOST: str = os.getenv("MINIO_HOST", "minio")
-    S3_STORAGE_PORT: int = int(os.getenv("MINIO_PORT", 9000))
+    S3_STORAGE_HOST: str = os.getenv("MINIO_HOST", "minio-theater")
+    S3_STORAGE_PORT: int = os.getenv("MINIO_PORT", 9000)
     S3_STORAGE_ACCESS_KEY: str = os.getenv("MINIO_ROOT_USER", "minioadmin")
     S3_STORAGE_SECRET_KEY: str = os.getenv("MINIO_ROOT_PASSWORD", "some_password")
     S3_BUCKET_NAME: str = os.getenv("MINIO_STORAGE", "theater-storage")
@@ -37,11 +37,11 @@ class BaseAppSettings(BaseSettings):
 
 
 class Settings(BaseAppSettings):
-    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "admin")
-    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "some_password")
-    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "postgres_theater")
+    POSTGRES_USER: str = os.getenv("POSTGRES_USER", "test_user")
+    POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "test_password")
+    POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "test_host")
     POSTGRES_DB_PORT: int = int(os.getenv("POSTGRES_DB_PORT", 5432))
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "movies_db")
+    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "test_db")
 
     SECRET_KEY_ACCESS: str = os.getenv("SECRET_KEY_ACCESS", "default_access_key")
     SECRET_KEY_REFRESH: str = os.getenv("SECRET_KEY_REFRESH", "default_refresh_key")

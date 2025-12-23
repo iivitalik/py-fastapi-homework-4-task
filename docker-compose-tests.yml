@@ -4,13 +4,12 @@ services:
       context: .
       dockerfile: ./docker/tests/Dockerfile
     container_name: backend_theater_test
-    command: >
-      sh -c "alembic upgrade head && 
-             pytest -c /usr/src/config/pytest.ini -m e2e --maxfail=5 --disable-warnings -v --tb=short"
+    command: [ "pytest", "-c", "/usr/src/config/pytest.ini",
+               "-m", "e2e", "--maxfail=5", "--disable-warnings", "-v", "--tb=short"]
     environment:
       - PYTHONPATH=/usr/src/fastapi
       - ENVIRONMENT=testing
-      - EMAIL_HOST=mailhog
+      - EMAIL_HOST=mailhog_theater_test
       - EMAIL_PORT=1025
       - EMAIL_HOST_USER=testuser@mate.com
       - EMAIL_HOST_PASSWORD=test_password
@@ -18,14 +17,9 @@ services:
       - MAILHOG_API_PORT=8025
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=some_password
-      - MINIO_HOST=minio
+      - MINIO_HOST=minio-theater-test
       - MINIO_PORT=9000
       - MINIO_STORAGE=theater-storage
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=some_password
-      - POSTGRES_HOST=postgres_theater
-      - POSTGRES_DB=movies_db
-      - POSTGRES_DB_PORT=5432
     depends_on:
       mailhog:
         condition: service_started
@@ -39,6 +33,9 @@ services:
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog_theater_test
+    ports:
+      - "8025:8025"
+      - "1025:1025"
     networks:
       - theater_network_test
 
@@ -46,14 +43,20 @@ services:
     image: minio/minio:latest
     container_name: minio-theater-test
     command: server --console-address ":9001" /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=some_password
+      - MINIO_HOST=minio-theater-test
+      - MINIO_PORT=9000
+      - MINIO_STORAGE=theater-storage
     volumes:
       - minio_data_test:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 5s
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 10s
       timeout: 5s
       retries: 5
     networks:
@@ -64,14 +67,14 @@ services:
       context: .
       dockerfile: docker/minio_mc/Dockerfile
     container_name: minio_mc_theater_test
-    command: ["/bin/sh", "-c", "/commands/setup_minio.sh"]
+    command: [ "/bin/sh", "-c", "/commands/setup_minio.sh" ]
     depends_on:
       minio:
         condition: service_healthy
     environment:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=some_password
-      - MINIO_HOST=minio
+      - MINIO_HOST=minio-theater-test
       - MINIO_PORT=9000
       - MINIO_STORAGE=theater-storage
     networks:
