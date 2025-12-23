@@ -23,8 +23,8 @@ services:
     depends_on:
       mailhog:
         condition: service_started
-      minio_mc:
-        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
     volumes:
       - ./src:/usr/src/fastapi
     networks:
